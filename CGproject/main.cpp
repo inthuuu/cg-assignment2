@@ -51,7 +51,12 @@ float triMaxOffset3 = -0.25f;
 //Model 4: Topping Variable Init
 bool direction4 = true;
 float triOffset4 = -8.0;
-float triMaxOffset4 = 0.0f;
+float triMaxOffset4 = -0.25f;
+
+bool direction5 = true;
+float triOffset5 = -10.0;
+float triMaxOffset5 = 0.7f;
+
 
 float triIncrement = 0.5f;
 
@@ -139,61 +144,36 @@ void CreateShaders()
 
 void Update(long elapsedTime)
 {
-    //Model 1: Pancake Base Animation Direction
-    if (direction)
-    {
-        //s += v * dt
-        triOffset += (triIncrement * elapsedTime / 1000.0);
-    }
-    else
-    {
-        triOffset -= (triIncrement * elapsedTime / 1000.0);
-    }
-     
+    
+     //Model 1: Pancake Base Animation Direction
+    if (direction) triOffset += (triIncrement * elapsedTime / 1000.0);
+
     if (direction && triOffset >= triMaxOffset) direction = false;
     if (!direction && triOffset <= -triMaxOffset) direction = true;
     
-    //Model 2: Wipping Cream Animation Direction
-    if (direction2)
-    {
-        //s += v * dt
-        triOffset2 += (triIncrement * elapsedTime / 1000.0);
-    }
-    else
-    {
-        triOffset2 -= (triIncrement * elapsedTime / 1000.0);
-    }
+    //Model 2: Wipping Cream  Animation Direction
+    if (direction2) triOffset2 += (triIncrement * elapsedTime / 1000.0);
      
     if (direction2 && triOffset2 >= triMaxOffset2) direction2 = false;
     if (!direction2 && triOffset2 <= -triMaxOffset2) direction2 = true;
     
     //Model 3: Top Pancake Animation Direction
-    if (direction3)
-    {
-        //s += v * dt
-        triOffset3 += (triIncrement * elapsedTime / 1000.0);
-    }
-    else
-    {
-        triOffset3 -= (triIncrement * elapsedTime / 1000.0);
-    }
+    if (direction3) triOffset3 += (triIncrement * elapsedTime / 1000.0);
      
     if (direction3 && triOffset3 >= triMaxOffset3) direction3 = false;
     if (!direction3 && triOffset3 <= -triMaxOffset3) direction3 = true;
     
     //Model 4: Topping Animation Direction
-    if (direction4)
-    {
-        //s += v * dt
-        triOffset4 += (triIncrement * elapsedTime / 1000.0);
-    }
-    else
-    {
-        triOffset4 -= (triIncrement * elapsedTime / 1000.0);
-    }
+    if (direction4) triOffset4 += (triIncrement * elapsedTime / 1000.0);
      
     if (direction4 && triOffset4 >= triMaxOffset4) direction4 = false;
     if (!direction4 && triOffset4 <= -triMaxOffset4) direction4 = true;
+
+    //Model 5: Honey
+    if (direction5) triOffset5 += (triIncrement * elapsedTime / 1000.0);
+     
+    if (direction5 && triOffset5 >= triMaxOffset5) direction5 = false;
+    if (!direction5 && triOffset5 <= -triMaxOffset5) direction5 = true;
     
 }
 
@@ -243,12 +223,23 @@ int main()
         /*  */
         glm::mat4 model(1.0f);
         /* Model 4: Topping */
-        //Component1: Cherry Ball
+
+        //cherry on top
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.25f, -triOffset4-0.15f, -1.5f));
+        model = glm::translate(model, glm::vec3(0.0f, -triOffset4 -0.1f, -1.5f));
         model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
-        color = glm::vec4(255.0/255.0, 64.0/255.0, 70.0/255.0, 1);
+        model = glm::scale(model, glm::vec3(0.005f, 0.02f, 1.0f));
+        model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(19.0/255.0, 74.0/255.0, 21.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -triOffset4 +0.15f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.045f, 0.045f, 1.0f));
+        color = glm::vec4(210.0/255.0, 5.0/255.0, 45.0/255.0, 1);
         for (int i = 1; i <= 4; i++) {
             if (i != 1) {
                 model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -259,24 +250,11 @@ int main()
             meshList[2]->RenderMesh();
         }
 
-        //Component2: Cherry Branch
+        //ice cream
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.25f, -triOffset4 - 0.05f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.01f, 0.07f, 1.0f));
-        model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-        color = glm::vec4(19.0/255.0, 74.0/255.0, 21.0/255.0, 1);
-        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
-        meshList[0]->RenderMesh();
-        
-        //Component3: Cherry Ball 2
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-0.16f, -triOffset4-0.10f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
-        color = glm::vec4(255.0/255.0, 64.0/255.0, 70.0/255.0, 1);
+        model = glm::translate(model, glm::vec3(0.0f, -triOffset4 , -1.5f));
+        model = glm::scale(model, glm::vec3(0.23f, 0.03f, 1.0f));
+        color = glm::vec4(255.0/255.0, 192.0/255.0, 193.0/255.0, 1);
         for (int i = 1; i <= 4; i++) {
             if (i != 1) {
                 model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -286,25 +264,10 @@ int main()
             glUniform4fv(uniformColor, 1, glm::value_ptr(color));
             meshList[2]->RenderMesh();
         }
-
-        //Component4: Cherry Branch 2
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-0.16f, -triOffset4 - 0.0f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.01f, 0.07f, 1.0f));
-        model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-        color = glm::vec4(19.0/255.0, 74.0/255.0, 21.0/255.0, 1);
-        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
-        meshList[0]->RenderMesh();
-        
-        //Component3: Cherry Ball 3
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -triOffset4-0.30f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
-        color = glm::vec4(255.0/255.0, 64.0/255.0, 70.0/255.0, 1);
+        model = glm::translate(model, glm::vec3(0.0f, -triOffset4 + 0.08f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.2f, 0.1f, 1.0f));
+        color = glm::vec4(255.0/255.0, 192.0/255.0, 193.0/255.0, 1);
         for (int i = 1; i <= 4; i++) {
             if (i != 1) {
                 model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -314,24 +277,12 @@ int main()
             glUniform4fv(uniformColor, 1, glm::value_ptr(color));
             meshList[2]->RenderMesh();
         }
-
-        //Component4: Cherry Branch 3
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -triOffset4-0.20f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.01f, 0.07f, 1.0f));
-        model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-        color = glm::vec4(19.0/255.0, 74.0/255.0, 21.0/255.0, 1);
-        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
-        meshList[0]->RenderMesh();
         
         /* Model 3: Top Pancake */
+
         //Component 1
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -triOffset3, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.6f, 0.2f, 1.0f));
         color = glm::vec4(173.0/255.0, 84.0/255.0, 0.0/255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -347,7 +298,6 @@ int main()
         //Component 2
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -triOffset3 - 0.05f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.6f, 0.07f, 1.0f));
         color = glm::vec4(228.0/255.0, 172.0/255.0, 121.0/255.0, 1);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -358,7 +308,6 @@ int main()
         //Component 3
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -triOffset3 - 0.1f  , -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.6f, 0.2f, 1.0f));
         color = glm::vec4(228.0/255.0, 172.0/255.0, 121.0/255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -372,11 +321,270 @@ int main()
         }
         
 
-        /* Model 2: Wipping Cream */
+        /* Model 2: Wipping Cream and banana and blueberry  */
+
+        //banana
+        //1
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.04f, -triOffset2 -0.32f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.01f, 1.0f));
+        model = glm::rotate(model, 35 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(190.0/255.0, 137.0/255.0, 5.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-0.02f, -triOffset2 -0.32f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.01f, 1.0f));
+        model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(190.0/255.0, 137.0/255.0, 5.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-0.02f, -triOffset2 -0.36f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.01f, 1.0f));
+        model = glm::rotate(model, 105 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(190.0/255.0, 137.0/255.0, 5.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.04f, -triOffset2 -0.36f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.01f, 1.0f));
+        model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(190.0/255.0, 137.0/255.0, 5.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -triOffset2 -0.34f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
+        color = glm::vec4(251.0/255.0, 242.0/255.0, 219.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -triOffset2 -0.36f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
+        color = glm::vec4(253.0/255.0, 236.0/255.0, 190.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }
+        //2 
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-0.35f, -triOffset2 -0.34f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.01f, 1.0f));
+        model = glm::rotate(model, 35 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(190.0/255.0, 137.0/255.0, 5.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-0.42f, -triOffset2 -0.34f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.01f, 1.0f));
+        model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(190.0/255.0, 137.0/255.0, 5.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-0.42f, -triOffset2 -0.38f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.01f, 1.0f));
+        model = glm::rotate(model, 105 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(190.0/255.0, 137.0/255.0, 5.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+         model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-0.35f, -triOffset2 -0.38f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.01f, 1.0f));
+        model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(190.0/255.0, 137.0/255.0, 5.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-0.4f, -triOffset2 -0.36f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
+        color = glm::vec4(251.0/255.0, 242.0/255.0, 219.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-0.4f, -triOffset2 -0.38f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
+        color = glm::vec4(253.0/255.0, 236.0/255.0, 190.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }
+        //3
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.35f, -triOffset2 -0.34f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.01f, 1.0f));
+        model = glm::rotate(model, 35 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(190.0/255.0, 137.0/255.0, 5.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.42f, -triOffset2 -0.34f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.01f, 1.0f));
+        model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(190.0/255.0, 137.0/255.0, 5.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.42f, -triOffset2 -0.38f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.01f, 1.0f));
+        model = glm::rotate(model, 105 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(190.0/255.0, 137.0/255.0, 5.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+         model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.35f, -triOffset2 -0.38f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.01f, 1.0f));
+        model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(190.0/255.0, 137.0/255.0, 5.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.4f, -triOffset2 -0.36f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
+        color = glm::vec4(251.0/255.0, 242.0/255.0, 219.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.4f, -triOffset2 -0.38f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
+        color = glm::vec4(253.0/255.0, 236.0/255.0, 190.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }
+        //blueberry
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.25f, -triOffset2 -0.25f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.03f, 0.03f, 1.0f));
+        color = glm::vec4(70.0/255.0, 65.0/255.0, 150.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }//1
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-0.20f, -triOffset2 -0.25f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.03f, 0.03f, 1.0f));
+        color = glm::vec4(70.0/255.0, 65.0/255.0, 150.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }//2
+         model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-0.25f, -triOffset2 -0.45f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.03f, 0.03f, 1.0f));
+        color = glm::vec4(70.0/255.0, 65.0/255.0, 150.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }//3
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.2f, -triOffset2 -0.4f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.03f, 0.03f, 1.0f));
+        color = glm::vec4(70.0/255.0, 65.0/255.0, 150.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }//2
+
+
+        //Wipping Cream
         //Model 2 Row -1
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.45f, -triOffset2-0.25f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -390,7 +598,6 @@ int main()
         }//1
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.35f, -triOffset2-0.25f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -404,7 +611,6 @@ int main()
         }//2
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.25f, -triOffset2-0.25f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -418,7 +624,6 @@ int main()
         }//3
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.15f, -triOffset2-0.25f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -432,7 +637,6 @@ int main()
         }//4
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.05f, -triOffset2-0.25f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -446,7 +650,6 @@ int main()
         }//5
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.05f, -triOffset2-0.25f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -460,7 +663,6 @@ int main()
         }//6
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.15f, -triOffset2-0.25f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -474,7 +676,6 @@ int main()
         }//7
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.25f, -triOffset2-0.25f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -488,7 +689,6 @@ int main()
         }//8
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.15f, -triOffset2-0.25f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -502,7 +702,6 @@ int main()
         }//9
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.25f, -triOffset2-0.25f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -516,7 +715,6 @@ int main()
         }//10
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.35f, -triOffset2-0.25f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -530,7 +728,6 @@ int main()
         }//11
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.45f, -triOffset2-0.25f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -546,7 +743,6 @@ int main()
         //Model 2 Row 0
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.50f, -triOffset2-0.30f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -560,7 +756,6 @@ int main()
         }//1
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.35f, -triOffset2-0.30f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -574,7 +769,6 @@ int main()
         }//2
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.25f, -triOffset2-0.30f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -588,7 +782,6 @@ int main()
         }//3
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.15f, -triOffset2-0.30f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -602,7 +795,6 @@ int main()
         }//4
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.05f, -triOffset2-0.30f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -616,7 +808,6 @@ int main()
         }//5
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.05f, -triOffset2-0.30f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -630,7 +821,6 @@ int main()
         }//6
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.15f, -triOffset2-0.30f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -644,7 +834,6 @@ int main()
         }//7
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.25f, -triOffset2-0.30f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -658,7 +847,6 @@ int main()
         }//8
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.15f, -triOffset2-0.30f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -672,7 +860,6 @@ int main()
         }//9
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.25f, -triOffset2-0.30f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -686,7 +873,6 @@ int main()
         }//10
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.35f, -triOffset2-0.30f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -700,7 +886,6 @@ int main()
         }//11
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.50f, -triOffset2-0.30f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -716,7 +901,6 @@ int main()
         //Model 2 Row 1
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.45f, -triOffset2-0.35f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -730,7 +914,6 @@ int main()
         }//1
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.35f, -triOffset2-0.35f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -744,7 +927,6 @@ int main()
         }//2
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.25f, -triOffset2-0.35f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -758,7 +940,6 @@ int main()
         }//3
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.15f, -triOffset2-0.35f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -772,7 +953,6 @@ int main()
         }//4
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.05f, -triOffset2-0.35f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -786,7 +966,6 @@ int main()
         }//5
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.05f, -triOffset2-0.35f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -800,7 +979,6 @@ int main()
         }//6
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.15f, -triOffset2-0.35f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -814,7 +992,6 @@ int main()
         }//7
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.25f, -triOffset2-0.35f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -828,7 +1005,6 @@ int main()
         }//8
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.15f, -triOffset2-0.35f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -842,7 +1018,6 @@ int main()
         }//9
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.25f, -triOffset2-0.35f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -856,7 +1031,6 @@ int main()
         }//10
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.35f, -triOffset2-0.35f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -870,7 +1044,6 @@ int main()
         }//11
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.45f, -triOffset2-0.35f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -886,7 +1059,6 @@ int main()
         //Model 2: Wipping Cream Row 2
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.52f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -900,7 +1072,6 @@ int main()
         }//0
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.45f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -914,7 +1085,6 @@ int main()
         }//1
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.35f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -928,7 +1098,6 @@ int main()
         }//2
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.25f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -942,7 +1111,6 @@ int main()
         }//3
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.15f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -956,7 +1124,6 @@ int main()
         }//4
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.05f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -970,7 +1137,6 @@ int main()
         }//5
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.05f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -984,7 +1150,6 @@ int main()
         }//6
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.15f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -998,7 +1163,6 @@ int main()
         }//7
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.25f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1012,7 +1176,6 @@ int main()
         }//8
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.15f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1026,7 +1189,6 @@ int main()
         }//9
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.25f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1040,7 +1202,6 @@ int main()
         }//10
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.35f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1054,7 +1215,6 @@ int main()
         }//11
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.45f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1068,7 +1228,6 @@ int main()
         }//12
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.52f, -triOffset2-0.40f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1084,7 +1243,6 @@ int main()
         //Model 2: Wipping Cream Row 3
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.45f, -triOffset2-0.45f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1098,7 +1256,6 @@ int main()
         }//1
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.35f, -triOffset2-0.45f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1112,7 +1269,6 @@ int main()
         }//2
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.25f, -triOffset2-0.45f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1126,7 +1282,6 @@ int main()
         }//3
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.15f, -triOffset2-0.45f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1140,7 +1295,6 @@ int main()
         }//4
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.05f, -triOffset2-0.45f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1154,7 +1308,6 @@ int main()
         }//5
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.05f, -triOffset2-0.45f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1168,7 +1321,6 @@ int main()
         }//6
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.15f, -triOffset2-0.45f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1182,7 +1334,6 @@ int main()
         }//7
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.25f, -triOffset2-0.45f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1196,7 +1347,6 @@ int main()
         }//8
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.15f, -triOffset2-0.45f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1210,7 +1360,6 @@ int main()
         }//9
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.25f, -triOffset2-0.45f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1224,7 +1373,6 @@ int main()
         }//10
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.35f, -triOffset2-0.45f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1238,7 +1386,6 @@ int main()
         }//11
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.45f, -triOffset2-0.45f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1254,7 +1401,6 @@ int main()
         //Model 2: Wipping Cream Row 4
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.35f, -triOffset2-0.50f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1268,7 +1414,6 @@ int main()
         }//2
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.25f, -triOffset2-0.50f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1282,7 +1427,6 @@ int main()
         }//3
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.15f, -triOffset2-0.50f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1296,7 +1440,6 @@ int main()
         }//4
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-0.05f, -triOffset2-0.50f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1310,7 +1453,6 @@ int main()
         }//5
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.05f, -triOffset2-0.50f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1324,7 +1466,6 @@ int main()
         }//6
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.15f, -triOffset2-0.50f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1338,7 +1479,6 @@ int main()
         }//7
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.25f, -triOffset2-0.50f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1352,7 +1492,6 @@ int main()
         }//8
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.35f, -triOffset2-0.50f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1366,7 +1505,6 @@ int main()
         }//9
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.45f, -triOffset2-0.50f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.09f, 0.09f, 1.0f));
         color = glm::vec4(255.0, 255.0, 255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1378,15 +1516,14 @@ int main()
             glUniform4fv(uniformColor, 1, glm::value_ptr(color));
             meshList[2]->RenderMesh();
         }//10
-        
+
         
 
-        /* Model 1: Pancake Base */
+        /*Model 1: Pancake Base */
 
         //Component 1
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -triOffset, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.6f, 0.2f, 1.0f));
         color = glm::vec4(173.0/255.0, 84.0/255.0, 0.0/255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1402,7 +1539,6 @@ int main()
         //Component 2
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -triOffset - 0.05f, -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.6f, 0.07f, 1.0f));
         color = glm::vec4(228.0/255.0, 172.0/255.0, 121.0/255.0, 1);
         glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1413,7 +1549,6 @@ int main()
         //Component 3
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -triOffset - 0.1f  , -1.5f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.0f));
         model = glm::scale(model, glm::vec3(0.6f, 0.2f, 1.0f));
         color = glm::vec4(228.0/255.0, 172.0/255.0, 121.0/255.0, 1);
         for (int i = 1; i <= 4; i++) {
@@ -1425,6 +1560,93 @@ int main()
             glUniform4fv(uniformColor, 1, glm::value_ptr(color));
             meshList[2]->RenderMesh();
         }
+
+        /* Model 5: Honey */  
+
+        //H
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(triOffset5 +0.03f, 0.3f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.05f, 1.0f));
+        color = glm::vec4(139.0/255.0, 102.0/255.0, 71.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(triOffset5, 0.3f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.04f, 0.008f, 1.0f));
+        color = glm::vec4(139.0/255.0, 102.0/255.0, 71.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(triOffset5 -0.03f , 0.3f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.008f, 0.05f, 1.0f));
+        color = glm::vec4(139.0/255.0, 102.0/255.0, 71.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }  
+        //circle
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(triOffset5, 0.3f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.1f, 0.1f, 1.0f));
+        color = glm::vec4(255.0/255.0, 255.0/255.0, 255.0/255.0, 1);
+        for (int i = 1; i <= 4; i++) {
+            if (i != 1) {
+                model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+            glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+            meshList[2]->RenderMesh();
+        }  
+        //lid
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(triOffset5, -0.02f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.108f, 0.03f, 1.0f));
+        color = glm::vec4(139.0/255.0, 102.0/255.0, 71.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+        //body
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -1.0f, -1.5f));
+        model = glm::scale(model, glm::vec3(2.0f, 1.0f, 1.0f));
+        color = glm::vec4(1.0f, 0.87843137f, 0.50980392f, 1.0f);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[0]->RenderMesh();
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(triOffset5, -0.1f, -1.5f));
+        model = glm::scale(model, glm::vec3(0.2f,0.7f, 1.0f));
+        model = glm::rotate(model, 180 * toRadians,glm::vec3(0.0f, 0.0f, 1.0f));
+        color = glm::vec4(235.0/255.0, 175.0/255.0, 76.0/255.0, 1);
+        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform4fv(uniformColor, 1, glm::value_ptr(color));
+        meshList[1]->RenderMesh();
         
         //end draw
 
